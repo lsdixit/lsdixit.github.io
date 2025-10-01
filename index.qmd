@@ -1,4 +1,19 @@
 ---
-title: "lsdixit.github.io"
+title: "Leela Dixit"
+image: Leela_cropped.jpg
+about: 
+  template: jolla
+  image-shape: round
+  image-width: 17em
+  links: 
+    - text: LinkedIn
+      href: https://www.linkedin.com/in/leeladixit/
+      target: _blank
+    - text: GitHub
+      href: https://github.com/lsdixit
+      target: _blank
+    - text: Email
+      href: mailto:leeladixit@bren.ucsb.edu
 ---
 
+Leela is a motivated data scientist eager to achieve ethical, equitable, and just environmental solutions in a changing world. 
