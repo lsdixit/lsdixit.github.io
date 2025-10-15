@@ -7,12 +7,15 @@ about:
   image-width: 17em
   links: 
     - text: LinkedIn
+      icon: linkedin
       href: https://www.linkedin.com/in/leeladixit/
       target: _blank
     - text: GitHub
+      icon: github
       href: https://github.com/lsdixit
       target: _blank
     - text: Email
+      icon: envelope
       href: mailto:leeladixit@bren.ucsb.edu
 ---
 

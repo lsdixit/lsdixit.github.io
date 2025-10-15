@@ -1,7 +1,10 @@
-/*-- scss:defaults --*/ 
+/*-- scss:defaults --*/
 
 // import google fonts
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+// font-size
+$roboto: "Roboto", sans-serif;
 
 // colors
 
@@ -16,5 +19,33 @@ $body-bg: $white;
 $navbar-bg: $grey;
 $footer-bg: $grey;
 $navbar-fg: $violet;
-$navbar-hl; $coral;
-$link-color; $coral;
+$navbar-hl: $coral;
+$link-color: $coral;
+
+/*-- scss:rules --*/ 
+
+h1, h2 {
+  letter-spacing: 5px;
+  font-weight: 700px;
+}
+
+.title {
+  color: maroon;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.orange-text {
+  color: orange;
+}
+
+/* h1, h2, h3, h4 {
+  font-family: $roboto;
+} */
+
+
+
+
+
