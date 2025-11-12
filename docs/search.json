@@ -1,17 +1,17 @@
 [
   {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "resources",
+    "section": "",
+    "text": "this is an h1 element\n\n\nthis is an h1 element with the title class\n\n\nthis paragraph is orange\n\n\nthis text is centered\n\n\nthis text is both centered and orange\n\n\nHere’s where I’m describing something fun that I enjoy doing.\nHere;s a full line\n\nHere’s one line\nHere’s another line\n\n\nThis is centered"
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
     "text": "Here’s what I do for work!"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Leela Dixit",
-    "section": "",
-    "text": "Leela is a motivated data scientist eager to achieve ethical, equitable, and just environmental solutions in a changing world."
   },
   {
     "objectID": "about.html#what-i-do-for-work",
@@ -28,10 +28,17 @@
     "text": "What I do for fun\nHere’s what I do for fun!"
   },
   {
-    "objectID": "resources.html",
-    "href": "resources.html",
-    "title": "resources",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Leela Dixit",
     "section": "",
-    "text": "this is an h1 element\n\n\nthis is an h1 element with the title class\n\n\nthis paragraph is orange\n\n\nthis text is centered\n\n\nthis text is both centered and orange\n\n\nHere’s where I’m describing something fun that I enjoy doing.\nHere;s a full line\n\nHere’s one line\nHere’s another line\n\n\nThis is centered"
+    "text": "Leela is a motivated data scientist eager to achieve ethical, equitable, and just environmental solutions in a changing world."
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Blog Posts",
+    "section": "",
+    "text": "My first blog post\n\n\n\nMEDS\n\nR\n\ndata-viz\n\n\n\nwelcome to my blog!\n\n\n\n\n\nNov 12, 2025\n\n\nLeela Dixit\n\n\n\n\n\nNo matching items"
   }
 ]

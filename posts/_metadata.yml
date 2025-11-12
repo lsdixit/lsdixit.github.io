@@ -1,0 +1,11 @@
+# any options specified here will apply to all posts in the posts/ folder
+
+author: 
+  - name: Leela Dixit
+    url: https://lsdixit.github.io/
+    affiliation: UCSB Master of Environmental Data Science
+    affiliation-url: https://bren.ucsb.edu/masters-programs/master-environmental-data-science
+
+title-block-banner: true
+
+freeze: auto

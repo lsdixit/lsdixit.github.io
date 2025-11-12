@@ -1,0 +1,22 @@
+---
+title: "My first blog post"
+description: "welcome to my blog!"
+date: 2025-11-12
+categories: [MEDS, R, data-viz]
+image: cat.jpg
+citation:
+  url: https://lsdixit.github.io/posts/my-first-blog-post/
+draft: true
+draft-mode: linked
+bibliography: references.bib
+---
+
+This is where the body of my blog post begins!I'm going to add a footnote here[^1]. Here's an inline footnote[^2]
+
+[^1]: Here is some additional context that might be helpful.
+
+[^2]: here's my inline note
+
+Let's cite Sam's blog[@shanny-csik2022]
+
+Let's cite a paper using its DOI[@gaynor2022]
