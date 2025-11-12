@@ -3,23 +3,34 @@ project:
   output-dir: docs
 
 website:
-  title: "lsdixit.github.io"
+  title: "Leela Dixit"
+  #favicon: images/favicon.png
   navbar:
+    #logo: images/logo.png
+    #logo-alt: alt text for my logo goes here
+    #title: false
     right:
       - href: index.qmd
         text: Home
-      # - about.qmd
-      # - href: resources.qmd
-      #   text: Resources
+      - about.qmd
+      - href: resources.qmd
+        text: Resources
+      - icon: github
+        href: https://github.com/lsdixit/lsdixit.github.io
+  page-footer: 
+    left: Copyright 2025, Leela Dixit
+    right:
+      - icon: github
+        href: https://github.com/lsdixit/lsdixit.github.io 
 
 format:
   html:
-    theme: cerulean
-      - cosmo
-      - brand
+    theme: styles.scss
     css: styles.css
     toc: true
     page-layout: full
+    mainfont: Montserrat
+
 
 
 

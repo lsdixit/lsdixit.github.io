@@ -2,8 +2,10 @@
 title: "About"
 ---
 
-About this site
+## What I do for work
 
-```{r}
-1 + 1
-```
+Here's what I do for work!
+
+## What I do for fun
+
+Here's what I do for fun!
