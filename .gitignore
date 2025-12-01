@@ -8,3 +8,5 @@
 /.quarto/
 
 **/*.quarto_ipynb
+
+/posts/2025-12-1-fire-analysis/data
