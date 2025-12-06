@@ -10,15 +10,25 @@ format: html
 editor_options: 
   chunk_output_type: console
 ---
+
 # Background
 
-![](farm.JPG){fig-scap='Photo credit: Saoysters'}
-[Creative License](https://creativecommons.org/licenses/by/3.0/deed.en) 
+![](farm.JPG){fig-scap="Photo credit: Saoysters"} [Creative License](https://creativecommons.org/licenses/by/3.0/deed.en)
 
-Marine aquaculture has grown substantially globally and has both positive and negative economic, ecological, and sustainability potential. Gentry et al estimated global seafood demand could be met using less than 0.015% of global ocean area. The United States is among the top countries with large marine aquaculture potential, likely due to long coastlines and exclusive economic zones (sea area 200 nm from a coastal baseline in which a sovereign state has exclusive rights). In this study, we will develop a workflow to determine which exclusive economic zones (EEZ) are best suited for species of oysters and red abalone, based on suitable sea surface temperature and depth.
+Marine aquaculture has grown substantially globally and has both positive and negative economic, ecological, and sustainability potential[^1]. Gentry et al[^2] estimated global seafood demand could be met using less than 0.015% of global ocean area. The United States is among the top countries with large marine aquaculture potential, likely due to long coastlines and exclusive economic zones[^3] (sea area 200 nm from a coastal baseline in which a sovereign state has exclusive rights). In this study, we will develop a workflow to determine which exclusive economic zones (EEZ) are best suited for species of oysters and red abalone, based on suitable sea surface temperature and depth.
 
+[^1]: Gentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters,
+    T., & Jones, R. (2020). Exploring the potential for marine
+    aquaculture to contribute to ecosystem services. *Reviews in Aquaculture*, *12*(2), 499-512.
+
+[^2]: Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M.,
+    Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global
+    potential for marine aquaculture. *Nature Ecology & Evolution*, 1, 1317-1324 (2017)
+
+[^3]: Gunnar Knapp & Michael C. Rubino (2016) The Political Economics of Marine Aquaculture in the United States, Reviews in Fisheries Science & Aquaculture, 24:3, 213-229, DOI: 10.1080/23308249.2015.1121202
 
 Load packages
+
 ```{r}
 #| output: false
 
@@ -31,6 +41,7 @@ library(terra)
 ```
 
 Read in data
+
 ```{r}
 #| output: false
 
@@ -47,7 +58,9 @@ sst <- rast(filelist)
 ```
 
 ## Step 1: Prepare the data
-Check the CRS of all data and transform if needed. 
+
+Check the CRS of all data and transform if needed.
+
 ```{r}
 # check crs for all data files
 crs(sst, describe = TRUE)$code 
@@ -65,7 +78,9 @@ if (crs(sst, describe = TRUE)$code == st_crs(eez)$epsg) {
 ```
 
 ## Step 2: Process data
+
 Clean sea surface temperature and depth data, including checking and transforming CRS, resolution, and extent.
+
 ```{r}
 # look at layer names
 names(sst)
@@ -102,9 +117,10 @@ check_match <- c(depth_resample, sst_avg)
 ```
 
 ## Step 3: Find suitable locations
+
 First we will develop a workflow to find suitable locations for many species of oysters.
 
-Ideal Sea Surface Temperature : 11-30 Celsius 
+Ideal Sea Surface Temperature : 11-30 Celsius
 
 Ideal Depth : 0-70 meters
 
@@ -183,6 +199,7 @@ tm_shape(total_area) +
 ```
 
 # Step 4: Create a reproducible workflow
+
 Red Abalone are a popular seafood delicacy and were farmed along the west coast of California prior to the fisheries closure 2018 following multiple ecological stressors leading to population declines. There are some farm operations for abalone on the west coast, and multiple restoration efforts in practice.
 
 We will compile the workflow above into a function to recreate a figure for Red Abalone.
@@ -190,6 +207,7 @@ We will compile the workflow above into a function to recreate a figure for Red 
 Ideal Sea Surface Temperature : 8 - 18 Celsius
 
 Ideal Depth : 0 - 24 meters
+
 ```{r}
 #| warning: false
 #| message: false
@@ -255,8 +273,9 @@ suitable_location(sst_low = 8,
 ```
 
 # Step 5: Conclusions
+
 For oysters, we can see the are on the west coast with the most suitable area is in the EEZ of the central area of California's coast, with the next highest in southern California. For red abalone, there is generally less total suitable area on the west coast but the EEZ with the most suitable area is in Washington, with the rest of the west coast being fairly comparable in suitable area.
 
-Native oysters, Olympia oysters for example, have a range that spreads all along the west coast. Their suitable EEZ areas make sense, with most of the area very close to shore where temperature and depth satisfies their ecological needs. Red abalone are also found along the entirety of the west coast, however with smaller suitable temperature and depth ranges, it makes sense they have a much smaller area of suitability. 
+Native oysters, Olympia oysters for example, have a range that spreads all along the west coast. Their suitable EEZ areas make sense, with most of the area very close to shore where temperature and depth satisfies their ecological needs. Red abalone are also found along the entirety of the west coast, however with smaller suitable temperature and depth ranges, it makes sense they have a much smaller area of suitability.
 
 While these maps are very informative for finding areas of the west coast for potential farming or restoration, for example, they only describe a small portion of what makes an area suitable for a species. There can be factors such as habitat and food availability, insulation from extreme weather events, competition or predation, or other ecological and environmental attributes that can influence the suitability of an area.
