@@ -1,0 +1,262 @@
+---
+title: "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA"
+author: 
+  - name: Leela Dixit
+    url: https://lsdixit.github.io/
+    affiliation: UCSB Master of Environmental Data Science
+    affiliation-url: https://bren.ucsb.edu/masters-programs/master-environmental-data-science
+date: "December 5, 2025"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+# Background
+
+![](farm.JPG){fig-scap='Photo credit: Saoysters'}
+[Creative License](https://creativecommons.org/licenses/by/3.0/deed.en) 
+
+Marine aquaculture has grown substantially globally and has both positive and negative economic, ecological, and sustainability potential. Gentry et al estimated global seafood demand could be met using less than 0.015% of global ocean area. The United States is among the top countries with large marine aquaculture potential, likely due to long coastlines and exclusive economic zones (sea area 200 nm from a coastal baseline in which a sovereign state has exclusive rights). In this study, we will develop a workflow to determine which exclusive economic zones (EEZ) are best suited for species of oysters and red abalone, based on suitable sea surface temperature and depth.
+
+
+Load packages
+```{r}
+#| output: false
+
+library(tidyverse)
+library(here)
+library(tmap)
+library(stars)
+library(raster)
+library(terra)
+```
+
+Read in data
+```{r}
+#| output: false
+
+# exclusive economic zones for west coast
+eez <- st_read(here("posts", "2025-12-05-eez-suitability", "data", "wc_regions_clean.shp"))
+
+# bathymetry
+depth <- rast(here("posts", "2025-12-05-eez-suitability", "data", "depth.tif"))
+
+# sea surface temperature
+# read in as a stack
+filelist <- list.files(here("posts", "2025-12-05-eez-suitability", "data", "average_annual_sst"), full.names = TRUE)
+sst <- rast(filelist)
+```
+
+## Step 1: Prepare the data
+Check the CRS of all data and transform if needed. 
+```{r}
+# check crs for all data files
+crs(sst, describe = TRUE)$code 
+st_crs(eez)$epsg
+crs(depth, describe = TRUE)$code
+
+# transform sea surface temp to 4326
+crs(sst) <- 'epsg:4326'
+# check again
+if (crs(sst, describe = TRUE)$code == st_crs(eez)$epsg) {
+  print("CRS match!")
+} else {
+  stop("CRS do not match, must transform")
+}
+```
+
+## Step 2: Process data
+Clean sea surface temperature and depth data, including checking and transforming CRS, resolution, and extent.
+```{r}
+# look at layer names
+names(sst)
+
+# find the mean SST from all years
+# sst_avg <- app(sst, mean, na.rm = TRUE)
+sst_avg <- mean(sst)
+names(sst_avg) # just one layer!
+
+# convert sst from kelvin to celsius
+sst_avg <- sst_avg - 273.15
+
+# crop depth raster to the extent of sst 
+depth_crop <- crop(depth, floor(ext(sst_avg)))
+# check extents match 
+ext(depth_crop) == ext(sst_avg) # they are very close, but extents don't match
+
+# resample depth data to match resolution to sst data
+# use nearest neighbor approach
+depth_resample <- resample(depth_crop, sst_avg, method = "near")
+
+# check for match in resolution, extent, and crs
+if (res(sst_avg)[1] == res(depth_resample)[1] &
+    res(sst_avg)[2] == res(depth_resample)[2] &
+    ext(sst_avg) == ext(depth_resample) &
+    crs(sst_avg) == crs(depth_resample)){
+  print("Resolution, extent, and CRS match!")
+} else {
+  stop("Resolution, extent, and/or CRS do not match.")
+}
+
+# combine depth and sst to make sure they match
+check_match <- c(depth_resample, sst_avg)
+```
+
+## Step 3: Find suitable locations
+First we will develop a workflow to find suitable locations for many species of oysters.
+
+Ideal Sea Surface Temperature : 11-30 Celsius 
+
+Ideal Depth : 0-70 meters
+
+```{r}
+#| warning: false
+#| 
+# min max sst and depth are replaceable for a function
+# reclassify for suitable conditions
+rcl_sst <- matrix(c(-Inf, 11, 0,
+                    11, 30, 1, 
+                    30, Inf, 0),
+                    ncol = 3, byrow = TRUE)
+
+rcl_depth <- matrix(c(-Inf, -70, 0,
+                      -70, 0, 1,
+                      0, Inf, 0),
+                      ncol = 3, byrow = TRUE)
+
+# reclassify per layer for each matrix
+sst_reclass <- classify(sst_avg, rcl_sst)
+depth_reclass <- classify(depth_resample, rcl_depth)
+# check min and max are 0 and 1
+summary(sst_reclass)
+summary(depth_reclass)
+
+# depth x sst will return only cells with both 1s as 1
+multiplication_func <- function(x, y) {
+  x * y
+}
+suitable_cells <- lapp(c(sst_reclass, depth_reclass), fun = multiplication_func)
+# check min and max are 0 and 1
+summary(suitable_cells)
+
+# create mask with EEZ so nothing too deep in the ocean and no on-land is returned
+suitable_cells_west <- mask(suitable_cells, eez)
+summary(suitable_cells_west)
+
+# quick plot to check mask worked
+plot(suitable_cells)
+plot(suitable_cells_west)
+
+# how many cells are suitable in each zone
+suitable_cells_west[suitable_cells_west == 0] <- NA
+eez_rast <- rasterize(eez, y = suitable_cells_west, field = "rgn_id")
+suitable_cells_west_zone <- zonal(suitable_cells_west, eez_rast, fun = "notNA")
+knitr::kable(suitable_cells_west_zone, format = "html", col.names = c("Region ID", "Suitable Cell Count"), table.attr = 'data-quarto-disable-processing="true"') %>% 
+  kableExtra::kable_styling(bootstrap_options = c("basic", "hover"), full_width = FALSE)
+
+# find cell size of suitable cell areas
+suitable_cell_area <- cellSize(suitable_cells_west, unit="km")
+summary(suitable_cell_area)
+
+# multiply against NAs to remove extra values
+suitable_cell_area_values <- suitable_cell_area * suitable_cells_west
+# sum across zones to get total suitable area
+total_area <- zonal(suitable_cell_area_values, eez_rast, fun="sum", na.rm = TRUE)
+knitr::kable(total_area, format = "html", 
+             col.names = c("Region ID", "Total Suitable Area (km)"), table.attr = 'data-quarto-disable-processing="true"') %>% 
+  kableExtra::kable_styling(bootstrap_options = c("basic", "hover"), 
+                            full_width = FALSE)
+
+# join to spatial data to map
+total_area <- left_join(total_area, eez, by = "rgn_id")
+total_area <- st_as_sf(total_area)
+
+# map total area in each suitable zone
+tm_shape(total_area) +
+  tm_basemap("CartoDB.PositronNoLabels") +
+  tm_polygons(fill = "area",
+              title = "Suitable Area (km)",
+              palette = "-viridis") +
+  tm_scalebar(breaks = c(0, 100, 200, 300),
+              position = c("left", "bottom")) +
+  tm_compass(position = c("left", "bottom")) +
+  tm_title("West Coast Suitable Area : Oysters")
+```
+
+# Step 4: Create a reproducible workflow
+Red Abalone are a popular seafood delicacy and were farmed along the west coast of California prior to the fisheries closure 2018 following multiple ecological stressors leading to population declines. There are some farm operations for abalone on the west coast, and multiple restoration efforts in practice.
+
+We will compile the workflow above into a function to recreate a figure for Red Abalone.
+
+Ideal Sea Surface Temperature : 8 - 18 Celsius
+
+Ideal Depth : 0 - 24 meters
+```{r}
+#| warning: false
+#| message: false
+
+suitable_location <- function(sst_low, sst_high, depth_low, depth_high, species_name) {
+  # set up reclassification matrix
+  rcl_sst <- matrix(c(-Inf, sst_low, 0,
+                    sst_low, sst_high, 1, 
+                    sst_high, Inf, 0),
+                    ncol = 3, byrow = TRUE)
+
+  rcl_depth <- matrix(c(-Inf, depth_low, 0,
+                      depth_low, depth_high, 1,
+                      depth_high, Inf, 0),
+                      ncol = 3, byrow = TRUE)
+  
+  # reclassify depth and sst data
+  sst_reclass <- classify(sst_avg, rcl_sst)
+  depth_reclass <- classify(depth_resample, rcl_depth)
+  
+  # multiply reclassified layers to return cells that are suitable for our species
+  multiplication_func <- function(x, y) {
+  x * y
+  }
+  suitable_cells <- lapp(c(sst_reclass, depth_reclass), fun = multiplication_func)
+  summary(suitable_cells)
+  
+  # create mask with EEZ so nothing too deep in the ocean and no on-land is returned
+  suitable_cells_west <- mask(suitable_cells, eez)
+  # set 0 cells to NA
+  suitable_cells_west[suitable_cells_west == 0] <- NA
+  
+  # find cell size of suitable cell areas
+  eez_rast <- rasterize(eez, y = suitable_cells_west, field = "rgn_id")
+  suitable_cell_area <- cellSize(suitable_cells_west, unit="km")
+  # multiply against NAs to remove extra values
+  suitable_cell_area_values <- suitable_cell_area * suitable_cells_west
+  
+  # sum across zones to get total suitable area, and join with spatial data to map
+  total_area <- zonal(suitable_cell_area_values, eez_rast, fun="sum", na.rm = TRUE)
+  total_area <- left_join(total_area, eez, by = "rgn_id")
+  total_area <- st_as_sf(total_area)
+  
+  # map suitable areas
+  tm_shape(total_area) +
+  tm_basemap("CartoDB.PositronNoLabels") +
+  tm_polygons(fill = "area",
+              title = "Suitable Area (km)",
+              palette = "-viridis") +
+  tm_scalebar(breaks = c(0, 100, 200, 300),
+              position = c("left", "bottom")) +
+  tm_compass(position = c("left", "bottom")) +
+  tm_title(paste("West Coast Suitable Area :", species_name))
+}
+
+
+# Run the function with suitable conditions for red abalone
+suitable_location(sst_low = 8, 
+                  sst_high = 18, 
+                  depth_low = -24, 
+                  depth_high = 0, 
+                  species_name = "Red Abalone")
+```
+
+# Step 5: Conclusions
+For oysters, we can see the are on the west coast with the most suitable area is in the EEZ of the central area of California's coast, with the next highest in southern California. For red abalone, there is generally less total suitable area on the west coast but the EEZ with the most suitable area is in Washington, with the rest of the west coast being fairly comparable in suitable area.
+
+Native oysters, Olympia oysters for example, have a range that spreads all along the west coast. Their suitable EEZ areas make sense, with most of the area very close to shore where temperature and depth satisfies their ecological needs. Red abalone are also found along the entirety of the west coast, however with smaller suitable temperature and depth ranges, it makes sense they have a much smaller area of suitability. 
+
+While these maps are very informative for finding areas of the west coast for potential farming or restoration, for example, they only describe a small portion of what makes an area suitable for a species. There can be factors such as habitat and food availability, insulation from extreme weather events, competition or predation, or other ecological and environmental attributes that can influence the suitability of an area.
