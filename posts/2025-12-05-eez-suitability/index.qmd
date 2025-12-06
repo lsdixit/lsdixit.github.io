@@ -9,6 +9,7 @@ date: "December 5, 2025"
 format: html
 editor_options: 
   chunk_output_type: console
+bibliography: references.bib
 ---
 
 # Background
