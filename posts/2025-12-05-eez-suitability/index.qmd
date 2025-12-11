@@ -5,7 +5,7 @@ author:
     url: https://lsdixit.github.io/
     affiliation: UCSB Master of Environmental Data Science
     affiliation-url: https://bren.ucsb.edu/masters-programs/master-environmental-data-science
-date: "December 5, 2025"
+date: "December 11, 2025"
 format: html
 editor_options: 
   chunk_output_type: console
@@ -15,26 +15,26 @@ editor_options:
 
 ![](farm.JPG){fig-scap="Photo credit: Saoysters"} [Creative License](https://creativecommons.org/licenses/by/3.0/deed.en)
 
-Marine aquaculture has grown substantially globally and has both positive and negative economic, ecological, and sustainability potential[^1]. Gentry et al[^2] estimated global seafood demand could be met using less than 0.015% of global ocean area. The United States is among the top countries with large marine aquaculture potential, likely due to long coastlines and exclusive economic zones[^3] (sea area 200 nm from a coastal baseline in which a sovereign state has exclusive rights). In this study, we will develop a workflow to determine which exclusive economic zones (EEZ) are best suited for species of oysters and red abalone, based on suitable sea surface temperature and depth.
+Marine aquaculture has grown substantially globally and has both positive and negative economic, ecological, and sustainability potential[^1]. Gentry et al[^2] estimated global seafood demand could be met using less than 0.015% of global ocean area. The United States is among the top countries with large marine aquaculture potential, likely due to long coastlines and exclusive economic zones[^3] (sea area 200 nm from a coastal baseline in which a sovereign state has exclusive rights).
 
-[^1]: Gentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters,
-    T., & Jones, R. (2020). Exploring the potential for marine
-    aquaculture to contribute to ecosystem services. *Reviews in Aquaculture*, *12*(2), 499-512.
+[^1]: Gentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters, T., & Jones, R. (2020). Exploring the potential for marine aquaculture to contribute to ecosystem services. *Reviews in Aquaculture*, *12*(2), 499-512.
 
-[^2]: Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M.,
-    Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global
-    potential for marine aquaculture. *Nature Ecology & Evolution*, 1, 1317-1324 (2017)
+[^2]: Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. *Nature Ecology & Evolution*, 1, 1317-1324 (2017)
 
 [^3]: Gunnar Knapp & Michael C. Rubino (2016) The Political Economics of Marine Aquaculture in the United States, Reviews in Fisheries Science & Aquaculture, 24:3, 213-229, DOI: 10.1080/23308249.2015.1121202
 
+### Problem statement
+
+With the rise of global seafood demand, we must leverage our marine aquaculture potential to meet the growing need. In order to maximize potential, we need to determine potential aquaculture locations based on optimizing habitat suitability for our aquaculture species of interest. In this study, we will develop a workflow to determine which exclusive economic zones (EEZ) are best suited for species of oysters and red abalone, two culturally and economically import species for seafood, based on suitable sea surface temperature and depth.
+
 # Data Sources
+
 Information on optimal sea surface temperature and depth for red abalone were collected from [Sea Life Base](https://www.sealifebase.ca/search.php). Sea surface temperature from 2008-2012 were originally generated through [NOAA's Coral Reef Watch daily 5km SST anomalies](https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php). Depth of the ocean was characterized with [General Bathymetric Chart of the Oceans (GEBCO](https://www.gebco.net/data-products/gridded-bathymetry-data#area). Maritime boundaries for exclusive economic zones (EEZ) were characterized by [marineregions.org](https://www.marineregions.org/eez.php)
 
-
-
-Load packages
+Load packages.
 
 ```{r}
+#| code-fold: true
 #| output: false
 
 library(tidyverse)
@@ -45,9 +45,10 @@ library(raster)
 library(terra)
 ```
 
-Read in data
+Read in data.
 
 ```{r}
+#| code-fold: true
 #| output: false
 
 # exclusive economic zones for west coast
@@ -62,11 +63,13 @@ filelist <- list.files(here("posts", "2025-12-05-eez-suitability", "data", "aver
 sst <- rast(filelist)
 ```
 
-## Step 1: Prepare the data
+# Step 1: Prepare the data
 
-Check the CRS of all data and transform if needed.
+In order to produce maps of our optimized suitable area for aquaculture, we need to clean and wrangle our data to be ready for analysis and visualizations. First, we will check the CRS of all data and transform if needed.
 
 ```{r}
+#| code-fold: true
+#| output: false
 # check crs for all data files
 crs(sst, describe = TRUE)$code 
 st_crs(eez)$epsg
@@ -74,6 +77,10 @@ crs(depth, describe = TRUE)$code
 
 # transform sea surface temp to 4326
 crs(sst) <- 'epsg:4326'
+```
+
+```{r}
+#| code-fold: true
 # check again
 if (crs(sst, describe = TRUE)$code == st_crs(eez)$epsg) {
   print("CRS match!")
@@ -82,11 +89,15 @@ if (crs(sst, describe = TRUE)$code == st_crs(eez)$epsg) {
 }
 ```
 
-## Step 2: Process data
 
-Clean sea surface temperature and depth data, including checking and transforming CRS, resolution, and extent.
+# Step 2: Process data
+
+Now that our data match in CRS, we can clean sea surface temperature and depth data, including converting from kelvin to celsius, cropping our depth data to the extent of our sea surface temperature data, and resampling our depth data to match the resolution of our sea surface temperature data. This is a necessary step in order to accurately calculate optimal locations for aquaculture, and to produce maps of those locations.
 
 ```{r}
+#| code-fold: true
+#| output: false
+
 # look at layer names
 names(sst)
 
@@ -106,6 +117,10 @@ ext(depth_crop) == ext(sst_avg) # they are very close, but extents don't match
 # resample depth data to match resolution to sst data
 # use nearest neighbor approach
 depth_resample <- resample(depth_crop, sst_avg, method = "near")
+```
+
+```{r}
+#| code-fold: true
 
 # check for match in resolution, extent, and crs
 if (res(sst_avg)[1] == res(depth_resample)[1] &
@@ -121,17 +136,24 @@ if (res(sst_avg)[1] == res(depth_resample)[1] &
 check_match <- c(depth_resample, sst_avg)
 ```
 
-## Step 3: Find suitable locations
+# Step 3: Find suitable locations
 
-First we will develop a workflow to find suitable locations for many species of oysters.
+We will categorize a suitable location as an area that satisfies conditions for both ideal sea surface temperature and ideal depth for our species.
 
-Ideal Sea Surface Temperature : 11-30 Celsius
+First we will develop a workflow to find suitable locations for Oysters.
 
-Ideal Depth : 0-70 meters
+| Metric                  | Range   |
+|-------------------------|---------|
+| Sea Surface Temperature | 11-30 C |
+| Depth                   | 0-70 m  |
+
+## Part 1: Reclassify
+
+For both our sea surface temperature and depth raster, we need to assign each cell a `0` or `1` based on whether it is in the suitable range for Oysters or not.
 
 ```{r}
+#| code-fold: true
 #| warning: false
-#| 
 # min max sst and depth are replaceable for a function
 # reclassify for suitable conditions
 rcl_sst <- matrix(c(-Inf, 11, 0,
@@ -148,48 +170,102 @@ rcl_depth <- matrix(c(-Inf, -70, 0,
 sst_reclass <- classify(sst_avg, rcl_sst)
 depth_reclass <- classify(depth_resample, rcl_depth)
 # check min and max are 0 and 1
-summary(sst_reclass)
-summary(depth_reclass)
+sst_min <- global(sst_reclass, min, na.rm = TRUE)$min
+sst_max <- global(sst_reclass, max, na.rm = TRUE)$max
+depth_min <- global(depth_reclass, min, na.rm = TRUE)$min
+depth_max <- global(depth_reclass, max, na.rm = TRUE)$max
+```
+
+We can check if our reclassification worked by checking the min and max of each raster.
+
+| Metric                  | Min           | Max           |
+|-------------------------|---------------|---------------|
+| Sea Surface Temperature | `r sst_min`   | `r sst_max`   |
+| Depth                   | `r depth_min` | `r depth_max` |
+
+## Part 2: Calculate suitable cells and mask
+Now that our data are in 0s and 1s, we can calculate our ideal locations by multiplying our sea surface temperature raster with our depth raster. If there is a 1 in both (i.e a suitable location) our resulting raster will have a 1. If there is a zero in one, or both, it will result in a 0 indicating it is not a suitable location.
+
+After finding all cells in our raster that are suitable for oysters, we will mask that raster to the extent of our exclusive economic zones, as that is where the highest potential of marine aquaculture would occur. 
+
+```{r}
+#| code-fold: true
+#| warning: false
 
 # depth x sst will return only cells with both 1s as 1
 multiplication_func <- function(x, y) {
   x * y
 }
 suitable_cells <- lapp(c(sst_reclass, depth_reclass), fun = multiplication_func)
-# check min and max are 0 and 1
-summary(suitable_cells)
 
 # create mask with EEZ so nothing too deep in the ocean and no on-land is returned
 suitable_cells_west <- mask(suitable_cells, eez)
-summary(suitable_cells_west)
 
 # quick plot to check mask worked
-plot(suitable_cells)
-plot(suitable_cells_west)
+map_suitable <- tm_shape(suitable_cells) +
+  tm_raster(breaks = c(0,1,2),
+            labels = c("Not Suitable", "Suitable"),
+            title = "Suitable Locations") +
+  tm_title("U.S. west coast: total area") +
+  tm_scalebar() +
+  tm_compass()
+map_suitable_eez <- tm_shape(suitable_cells_west) +
+  tm_raster(breaks = c(0,1,2),
+            labels = c("Not Suitable", "Suitable"),
+            title = "Suitable Locations") +
+  tm_title("U.S. west coast: EEZ area") +
+  tm_scalebar() +
+  tm_compass()
+
+tmap_arrange(map_suitable, map_suitable_eez, nrow = 1)
+```
+We can see we've cut out any areas that might have been on land, and all areas in the deeper ocean and outside of the U.S. EEZ zones. All areas that were deemed suitable for Oysters based on sea surface temperature and depth are shaded in darker blue, congregating generally right along the coastline. 
+
+## Part 3: Calculate suitable area and map
+We can use this smaller EEZ area to now calculate in km2 the area in each exclusive economic zone that would be suitable for oyster aquaculture. Another way to maximize our aquaculture potential is to hone in on the area of the west coast with the most suitable area for our species of interest. It is not realistic to assume aquaculture for one species can occupy the entire west coast, so by narrowing the scope to the most suitable areas we can ensure the best chance of survival of our species, likely leading to a more profitable aquaculture outcome.
+
+We will count the cells we calculated as suitable in the previous part, and multiply that value by the size in km2 of each cell. We will then visualize these values on a map of each EEZ. 
+
+```{r}
+#| code-fold: true
+#| warning: false
 
 # how many cells are suitable in each zone
 suitable_cells_west[suitable_cells_west == 0] <- NA
 eez_rast <- rasterize(eez, y = suitable_cells_west, field = "rgn_id")
 suitable_cells_west_zone <- zonal(suitable_cells_west, eez_rast, fun = "notNA")
-knitr::kable(suitable_cells_west_zone, format = "html", col.names = c("Region ID", "Suitable Cell Count"), table.attr = 'data-quarto-disable-processing="true"') %>% 
+knitr::kable(suitable_cells_west_zone, 
+             caption = "Total suitable cells", 
+             #format = "html", 
+             col.names = c("Region ID", "Suitable Cell Count"), 
+             table.attr = 'data-quarto-disable-processing="true"') %>% 
   kableExtra::kable_styling(bootstrap_options = c("basic", "hover"), full_width = FALSE)
 
 # find cell size of suitable cell areas
 suitable_cell_area <- cellSize(suitable_cells_west, unit="km")
-summary(suitable_cell_area)
 
 # multiply against NAs to remove extra values
 suitable_cell_area_values <- suitable_cell_area * suitable_cells_west
 # sum across zones to get total suitable area
 total_area <- zonal(suitable_cell_area_values, eez_rast, fun="sum", na.rm = TRUE)
-knitr::kable(total_area, format = "html", 
-             col.names = c("Region ID", "Total Suitable Area (km)"), table.attr = 'data-quarto-disable-processing="true"') %>% 
+knitr::kable(total_area, 
+             #format = "html",
+             caption = "Total suitable area (km2)",
+             col.names = c("Region ID", "Total Suitable Area (km)"), 
+             table.attr = 'data-quarto-disable-processing="true"') %>% 
   kableExtra::kable_styling(bootstrap_options = c("basic", "hover"), 
                             full_width = FALSE)
 
 # join to spatial data to map
 total_area <- left_join(total_area, eez, by = "rgn_id")
 total_area <- st_as_sf(total_area)
+```
+
+In our map, we can see the 5 EEZ areas split along the west coast of the United States, and the EEZ with the largest area of suitable habitat is in the central coast of California, following by the southern coast of California. If we, for example, want to maximize our potential for oyster aquaculture on the west coast of the United States, these areas may be the most ideal in terms of habitat suitability for oysters.
+
+```{r}
+#| code-fold: true
+#| warning: false
 
 # map total area in each suitable zone
 tm_shape(total_area) +
@@ -203,17 +279,21 @@ tm_shape(total_area) +
   tm_title("West Coast Suitable Area : Oysters")
 ```
 
+
 # Step 4: Create a reproducible workflow
 
-Red Abalone are a popular seafood delicacy and were farmed along the west coast of California prior to the fisheries closure 2018 following multiple ecological stressors leading to population declines. There are some farm operations for abalone on the west coast, and multiple restoration efforts in practice.
+Red Abalone are a popular seafood delicacy, and were farmed along the west coast of California prior to the fisheries closure in 2018 following multiple ecological stressors, ultimately leading to population declines. There are some farm operations for red abalone on the west coast, and multiple restoration efforts in practice.
 
-We will compile the workflow above into a function to recreate a figure for Red Abalone.
+We will compile the workflow above into a function to recreate a similar figure for Red Abalone.
 
-Ideal Sea Surface Temperature : 8 - 18 Celsius
+| Metric                  | Range   |
+|-------------------------|---------|
+| Sea Surface Temperature | 8-18 C |
+| Depth                   | 0-24 m  |
 
-Ideal Depth : 0 - 24 meters
 
 ```{r}
+#| code-fold: true
 #| warning: false
 #| message: false
 
@@ -267,7 +347,14 @@ suitable_location <- function(sst_low, sst_high, depth_low, depth_high, species_
   tm_compass(position = c("left", "bottom")) +
   tm_title(paste("West Coast Suitable Area :", species_name))
 }
+```
 
+Here we can see a very similar map to our previous map of oysters, with different values in each EEZ where it is now suitable locations for red abalone. We were able to condense all 3 parts of our previous workflow for oysters into a function that only requires parameters of ideal suitable conditions (sea surface temperature range, depth range, and species name). As long as you have that information, you can recreate this suitability map for any species of interest. 
+
+```{r}
+#| code-fold: true
+#| warning: false
+#| message: false
 
 # Run the function with suitable conditions for red abalone
 suitable_location(sst_low = 8, 
@@ -277,21 +364,23 @@ suitable_location(sst_low = 8,
                   species_name = "Red Abalone")
 ```
 
+
 # Step 5: Conclusions
 
-For oysters, we can see the are on the west coast with the most suitable area is in the EEZ of the central area of California's coast, with the next highest in southern California. For red abalone, there is generally less total suitable area on the west coast but the EEZ with the most suitable area is in Washington, with the rest of the west coast being fairly comparable in suitable area.
+For oysters, we can see the area on the west coast with the most suitable area is in the EEZ of the central area of California's coast, with the next highest in southern California. For red abalone, there is generally less total suitable area on the west coast but the EEZ with the most suitable area is in Washington, with the rest of the west coast being fairly comparable in suitable area.
 
 Native oysters, Olympia oysters for example, have a range that spreads all along the west coast. Their suitable EEZ areas make sense, with most of the area very close to shore where temperature and depth satisfies their ecological needs. Red abalone are also found along the entirety of the west coast, however with smaller suitable temperature and depth ranges, it makes sense they have a much smaller area of suitability.
 
-While these maps are very informative for finding areas of the west coast for potential farming or restoration, for example, they only describe a small portion of what makes an area suitable for a species. There can be factors such as habitat and food availability, insulation from extreme weather events, competition or predation, or other ecological and environmental attributes that can influence the suitability of an area.
+While these maps are very informative for finding areas of the west coast for potential farming or restoration, for example, they only describe a small portion of what makes an area suitable for a species. There can be factors such as habitat and food availability, insulation from extreme weather events, competition or predation, or other ecological and environmental attributes that can influence the suitability of an area. However, they are an excellent first step to determine areas for future marine aquaculture, and a step forward in achieving our goal of leveraging our unique marine aquaculture potential in the U.S. to meet the growing seafood demand. 
 
 # Citations
-- Hall, S. J., Delaporte, A., Phillips, M. J., Beveridge, M. & O’Keefe, M. Blue Frontiers: Managing the Environmental Costs of Aquaculture (The WorldFish Center, Penang, Malaysia, 2011).
-- Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. Nature Ecology & Evolution, 1, 1317-1324 (2017).
-- NOAA Coral Reef Watch Daily Global 5km Satellite Coral Bleaching Heat Stress SST Anomaly Product (Version 3.1). (n.d.). Coralreefwatch.noaa.gov. https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php.
-- Search SeaLifeBase. (n.d.). Www.sealifebase.ca. https://www.sealifebase.ca/search.php.
-- Marine Regions. (n.d.). Www.marineregions.org. https://www.marineregions.org/eez.php
-- GEBCO Compilation Group (2022) GEBCO_2022 Grid (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c).
-- Gentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters, T., & Jones, R. (2020). Exploring the potential for marine aquaculture to contribute to ecosystem services. *Reviews in Aquaculture*, *12*(2), 499-512.
-- Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. *Nature Ecology & Evolution*, 1, 1317-1324 (2017)
-- Gunnar Knapp & Michael C. Rubino (2016) The Political Economics of Marine Aquaculture in the United States, Reviews in Fisheries Science & Aquaculture, 24:3, 213-229, DOI: 10.1080/23308249.2015.1121202
+
+-   Hall, S. J., Delaporte, A., Phillips, M. J., Beveridge, M. & O’Keefe, M. Blue Frontiers: Managing the Environmental Costs of Aquaculture (The WorldFish Center, Penang, Malaysia, 2011).
+-   Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. Nature Ecology & Evolution, 1, 1317-1324 (2017).
+-   NOAA Coral Reef Watch Daily Global 5km Satellite Coral Bleaching Heat Stress SST Anomaly Product (Version 3.1). (n.d.). Coralreefwatch.noaa.gov. https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php.
+-   Search SeaLifeBase. (n.d.). Www.sealifebase.ca. https://www.sealifebase.ca/search.php.
+-   Marine Regions. (n.d.). Www.marineregions.org. https://www.marineregions.org/eez.php
+-   GEBCO Compilation Group (2022) GEBCO_2022 Grid (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c).
+-   Gentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters, T., & Jones, R. (2020). Exploring the potential for marine aquaculture to contribute to ecosystem services. *Reviews in Aquaculture*, *12*(2), 499-512.
+-   Gentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. *Nature Ecology & Evolution*, 1, 1317-1324 (2017)
+-   Gunnar Knapp & Michael C. Rubino (2016) The Political Economics of Marine Aquaculture in the United States, Reviews in Fisheries Science & Aquaculture, 24:3, 213-229, DOI: 10.1080/23308249.2015.1121202
