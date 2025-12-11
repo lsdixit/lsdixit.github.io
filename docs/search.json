@@ -1,0 +1,100 @@
+[
+  {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "resources",
+    "section": "",
+    "text": "this is an h1 element\n\n\nthis is an h1 element with the title class\n\n\nthis paragraph is orange\n\n\nthis text is centered\n\n\nthis text is both centered and orange\n\n\nHere’s where I’m describing something fun that I enjoy doing.\nHere;s a full line\n\nHere’s one line\nHere’s another line\n\n\nThis is centered"
+  },
+  {
+    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html",
+    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html",
+    "title": "The Eaton and Palisades Fires",
+    "section": "",
+    "text": "Use of false-color imagery and Landsat data to assess impacts of fire.\n\nPhoto of homes burning right next to the ocean.\nPhoto credit: Cal-Fire.\nLink: https://commons.wikimedia.org/wiki/File:Palisades_Fire_(54253581167).jpg"
+  },
+  {
+    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#exploring-the-extent-and-impact-of-the-eaton-and-palisades-fires-in-los-angeles-county",
+    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#exploring-the-extent-and-impact-of-the-eaton-and-palisades-fires-in-los-angeles-county",
+    "title": "The Eaton and Palisades Fires",
+    "section": "",
+    "text": "Use of false-color imagery and Landsat data to assess impacts of fire.\n\nPhoto of homes burning right next to the ocean.\nPhoto credit: Cal-Fire.\nLink: https://commons.wikimedia.org/wiki/File:Palisades_Fire_(54253581167).jpg"
+  },
+  {
+    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#background",
+    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#background",
+    "title": "The Eaton and Palisades Fires",
+    "section": "Background",
+    "text": "Background\nThe Eaton and Palisades fires in Los Angeles County started in January 7, 2025 and subsequently burned over 20,000 acres, devastating local communities, damaging thousands of homes and many acres of ecological habitat, and leaving deep scars in both the communities they affected and the land itself. In this study, we will visualize the extents and impacts of the Eaton and Palisades fires using false color imagery through Landsat data and known perimeters of both fires, and focus in on an environmental justice metric to assess the community’s potential response to wildfire.\nTo learn more about false color images and landsats, see the following resources:\nWhy is that Forest Red and that Cloud Blue? How to Interpret a False-Color Satellite Image\nWhat are the band designations for the Landsat satellites?\nCommon Landsat Band Combinations\n\nAnalysis Highlights\nIn this study, we will highlight the following skills:\n\nExamining rioxarrays and NetCDF files to pull, transform, and manipulate spatial data.\nMap true and false color images from NetCDF files.\nMap census tracts that intersect the Eaton and Palisades fires to explore potential injustices.\n\n\n\nDatasets:\nLandsat data are from Microsoft Planetary Computer data catalogue. These data contain bands for red, green, blue, near-infrared and shortwave infrared, from the Landsat Collection 2 Level-2 collected by Landsat-8. Our data is cropped to areas surrounding the extent of the fires.\nPerimeter data are from Los Angeles County Dissolved Fire Perimeter Data. These data originate from data containing daily snapshots of perimeters, but are dissolved into one layer for these data.\nFire perimeter data: https://geohub.lacity.org/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about Landsat data: https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2\nEJI data are from the Environmental Justice Index (EJI), a national tool to measure environmental burden. The EJI ranks tracts for 36 different factors developed from data from many different sources.\n\n\nRepository:\nAll code and output for this blogpost are housed on GitHub.\nBegin by loading all necessary libraries and data.\n\n# Load libraries\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport os\nimport xarray as xr\nimport contextily as ctx\nfrom matplotlib_scalebar.scalebar import ScaleBar\n\n\n# Load data\n\n# Read in NetCDF file\nfp_landsat = os.path.join(\"data\", \"landsat8-2025-02-23-palisades-eaton.nc\")\nlandsat = xr.open_dataset(fp_landsat)\n\n# Read in perimeter data\nfp_eaton = os.path.join(\"data\", \"Eaton_Perimeter\", \"Eaton_Perimeter_20250121.shp\")\nfp_palisades = os.path.join(\"data\", \"Palisades_Perimeter\", \"Palisades_Perimeter_20250121.shp\")\neaton_perimeter = gpd.read_file(fp_eaton)\npalisades_perimeter = gpd.read_file(fp_palisades)\n\n# Import CA EJI gdb\nfp = os.path.join(\"data\", \"EJI_2024_California\", \"EJI_2024_California.gdb\")\neji_california = gpd.read_file(fp)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Leela Dixit",
+    "section": "",
+    "text": "Leela is a motivated data scientist eager to achieve ethical, equitable, and just environmental solutions in a changing world."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Here’s what I do for work!"
+  },
+  {
+    "objectID": "about.html#what-i-do-for-work",
+    "href": "about.html#what-i-do-for-work",
+    "title": "About",
+    "section": "",
+    "text": "Here’s what I do for work!"
+  },
+  {
+    "objectID": "about.html#what-i-do-for-fun",
+    "href": "about.html#what-i-do-for-fun",
+    "title": "About",
+    "section": "What I do for fun",
+    "text": "What I do for fun\nHere’s what I do for fun!"
+  },
+  {
+    "objectID": "posts/2025-12-05-eez-suitability/index.html",
+    "href": "posts/2025-12-05-eez-suitability/index.html",
+    "title": "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA",
+    "section": "",
+    "text": "Creative License\nMarine aquaculture has grown substantially globally and has both positive and negative economic, ecological, and sustainability potential1. Gentry et al2 estimated global seafood demand could be met using less than 0.015% of global ocean area. The United States is among the top countries with large marine aquaculture potential, likely due to long coastlines and exclusive economic zones3 (sea area 200 nm from a coastal baseline in which a sovereign state has exclusive rights).\n\n\nWith the rise of global seafood demand, we must leverage our marine aquaculture potential to meet the growing need. In order to maximize potential, we need to determine potential aquaculture locations based on optimizing habitat suitability for our aquaculture species of interest. In this study, we will develop a workflow to determine which exclusive economic zones (EEZ) are best suited for species of oysters and red abalone, two culturally and economically import species for seafood, based on suitable sea surface temperature and depth."
+  },
+  {
+    "objectID": "posts/2025-12-05-eez-suitability/index.html#part-1-reclassify",
+    "href": "posts/2025-12-05-eez-suitability/index.html#part-1-reclassify",
+    "title": "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA",
+    "section": "Part 1: Reclassify",
+    "text": "Part 1: Reclassify\nFor both our sea surface temperature and depth raster, we need to assign each cell a 0 or 1 based on whether it is in the suitable range for Oysters or not.\n\n\nCode\n# min max sst and depth are replaceable for a function\n# reclassify for suitable conditions\nrcl_sst &lt;- matrix(c(-Inf, 11, 0,\n                    11, 30, 1, \n                    30, Inf, 0),\n                    ncol = 3, byrow = TRUE)\n\nrcl_depth &lt;- matrix(c(-Inf, -70, 0,\n                      -70, 0, 1,\n                      0, Inf, 0),\n                      ncol = 3, byrow = TRUE)\n\n# reclassify per layer for each matrix\nsst_reclass &lt;- classify(sst_avg, rcl_sst)\ndepth_reclass &lt;- classify(depth_resample, rcl_depth)\n# check min and max are 0 and 1\nsst_min &lt;- global(sst_reclass, min, na.rm = TRUE)$min\nsst_max &lt;- global(sst_reclass, max, na.rm = TRUE)$max\ndepth_min &lt;- global(depth_reclass, min, na.rm = TRUE)$min\ndepth_max &lt;- global(depth_reclass, max, na.rm = TRUE)$max\n\n\nWe can check if our reclassification worked by checking the min and max of each raster.\n\n\n\nMetric\nMin\nMax\n\n\n\n\nSea Surface Temperature\n0\n1\n\n\nDepth\n0\n1"
+  },
+  {
+    "objectID": "posts/2025-12-05-eez-suitability/index.html#part-2-calculate-suitable-cells-and-mask",
+    "href": "posts/2025-12-05-eez-suitability/index.html#part-2-calculate-suitable-cells-and-mask",
+    "title": "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA",
+    "section": "Part 2: Calculate suitable cells and mask",
+    "text": "Part 2: Calculate suitable cells and mask\nNow that our data are in 0s and 1s, we can calculate our ideal locations by multiplying our sea surface temperature raster with our depth raster. If there is a 1 in both (i.e a suitable location) our resulting raster will have a 1. If there is a zero in one, or both, it will result in a 0 indicating it is not a suitable location.\nAfter finding all cells in our raster that are suitable for oysters, we will mask that raster to the extent of our exclusive economic zones, as that is where the highest potential of marine aquaculture would occur.\n\n\nCode\n# depth x sst will return only cells with both 1s as 1\nmultiplication_func &lt;- function(x, y) {\n  x * y\n}\nsuitable_cells &lt;- lapp(c(sst_reclass, depth_reclass), fun = multiplication_func)\n\n# create mask with EEZ so nothing too deep in the ocean and no on-land is returned\nsuitable_cells_west &lt;- mask(suitable_cells, eez)\n\n# quick plot to check mask worked\nmap_suitable &lt;- tm_shape(suitable_cells) +\n  tm_raster(breaks = c(0,1,2),\n            labels = c(\"Not Suitable\", \"Suitable\"),\n            title = \"Suitable Locations\") +\n  tm_title(\"U.S. west coast: total area\") +\n  tm_scalebar() +\n  tm_compass()\nmap_suitable_eez &lt;- tm_shape(suitable_cells_west) +\n  tm_raster(breaks = c(0,1,2),\n            labels = c(\"Not Suitable\", \"Suitable\"),\n            title = \"Suitable Locations\") +\n  tm_title(\"U.S. west coast: EEZ area\") +\n  tm_scalebar() +\n  tm_compass()\n\ntmap_arrange(map_suitable, map_suitable_eez, nrow = 1)\n\n\n\n\n\n\n\n\n\nWe can see we’ve cut out any areas that might have been on land, and all areas in the deeper ocean and outside of the U.S. EEZ zones. All areas that were deemed suitable for Oysters based on sea surface temperature and depth are shaded in darker blue, congregating generally right along the coastline."
+  },
+  {
+    "objectID": "posts/2025-12-05-eez-suitability/index.html#part-3-calculate-suitable-area-and-map",
+    "href": "posts/2025-12-05-eez-suitability/index.html#part-3-calculate-suitable-area-and-map",
+    "title": "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA",
+    "section": "Part 3: Calculate suitable area and map",
+    "text": "Part 3: Calculate suitable area and map\nWe can use this smaller EEZ area to now calculate in km2 the area in each exclusive economic zone that would be suitable for oyster aquaculture. Another way to maximize our aquaculture potential is to hone in on the area of the west coast with the most suitable area for our species of interest. It is not realistic to assume aquaculture for one species can occupy the entire west coast, so by narrowing the scope to the most suitable areas we can ensure the best chance of survival of our species, likely leading to a more profitable aquaculture outcome.\nWe will count the cells we calculated as suitable in the previous part, and multiply that value by the size in km2 of each cell. We will then visualize these values on a map of each EEZ.\n\n\nCode\n# how many cells are suitable in each zone\nsuitable_cells_west[suitable_cells_west == 0] &lt;- NA\neez_rast &lt;- rasterize(eez, y = suitable_cells_west, field = \"rgn_id\")\nsuitable_cells_west_zone &lt;- zonal(suitable_cells_west, eez_rast, fun = \"notNA\")\nknitr::kable(suitable_cells_west_zone, \n             caption = \"Total suitable cells\", \n             #format = \"html\", \n             col.names = c(\"Region ID\", \"Suitable Cell Count\"), \n             table.attr = 'data-quarto-disable-processing=\"true\"') %&gt;% \n  kableExtra::kable_styling(bootstrap_options = c(\"basic\", \"hover\"), full_width = FALSE)\n\n\n\nTotal suitable cells\n\n\nRegion ID\nSuitable Cell Count\n\n\n\n\n1\n71\n\n\n2\n11\n\n\n3\n238\n\n\n4\n211\n\n\n5\n162\n\n\n\n\n\nCode\n# find cell size of suitable cell areas\nsuitable_cell_area &lt;- cellSize(suitable_cells_west, unit=\"km\")\n\n# multiply against NAs to remove extra values\nsuitable_cell_area_values &lt;- suitable_cell_area * suitable_cells_west\n# sum across zones to get total suitable area\ntotal_area &lt;- zonal(suitable_cell_area_values, eez_rast, fun=\"sum\", na.rm = TRUE)\nknitr::kable(total_area, \n             #format = \"html\",\n             caption = \"Total suitable area (km2)\",\n             col.names = c(\"Region ID\", \"Total Suitable Area (km)\"), \n             table.attr = 'data-quarto-disable-processing=\"true\"') %&gt;% \n  kableExtra::kable_styling(bootstrap_options = c(\"basic\", \"hover\"), \n                            full_width = FALSE)\n\n\n\nTotal suitable area (km2)\n\n\nRegion ID\nTotal Suitable Area (km)\n\n\n\n\n1\n1074.2720\n\n\n2\n178.0268\n\n\n3\n4069.8766\n\n\n4\n3757.2849\n\n\n5\n2378.3137\n\n\n\n\n\nCode\n# join to spatial data to map\ntotal_area &lt;- left_join(total_area, eez, by = \"rgn_id\")\ntotal_area &lt;- st_as_sf(total_area)\n\n\nIn our map, we can see the 5 EEZ areas split along the west coast of the United States, and the EEZ with the largest area of suitable habitat is in the central coast of California, following by the southern coast of California. If we, for example, want to maximize our potential for oyster aquaculture on the west coast of the United States, these areas may be the most ideal in terms of habitat suitability for oysters.\n\n\nCode\n# map total area in each suitable zone\ntm_shape(total_area) +\n  tm_basemap(\"CartoDB.PositronNoLabels\") +\n  tm_polygons(fill = \"area\",\n              title = \"Suitable Area (km)\",\n              palette = \"-viridis\") +\n  tm_scalebar(breaks = c(0, 100, 200, 300),\n              position = c(\"left\", \"bottom\")) +\n  tm_compass(position = c(\"left\", \"bottom\")) +\n  tm_title(\"West Coast Suitable Area : Oysters\")"
+  },
+  {
+    "objectID": "posts/2025-12-05-eez-suitability/index.html#footnotes",
+    "href": "posts/2025-12-05-eez-suitability/index.html#footnotes",
+    "title": "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nGentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters, T., & Jones, R. (2020). Exploring the potential for marine aquaculture to contribute to ecosystem services. Reviews in Aquaculture, 12(2), 499-512.↩︎\nGentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. Nature Ecology & Evolution, 1, 1317-1324 (2017)↩︎\nGunnar Knapp & Michael C. Rubino (2016) The Political Economics of Marine Aquaculture in the United States, Reviews in Fisheries Science & Aquaculture, 24:3, 213-229, DOI: 10.1080/23308249.2015.1121202↩︎"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Blog Posts",
+    "section": "",
+    "text": "The Eaton and Palisades Fires\n\n\n\n\n\n\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nfire\n\n\n\n\n\n\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nDetermining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA\n\n\n\n\n\n\n\n\nDec 11, 2025\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nMy first blog post\n\n\n\nMEDS\n\nR\n\ndata-viz\n\n\n\nwelcome to my blog!\n\n\n\n\n\nNov 12, 2025\n\n\nLeela Dixit\n\n\n\n\n\nNo matching items"
+  }
+]
