@@ -87,9 +87,8 @@ To center my primary message (Successes and setbacks of the WACBP), it is presen
 Feel free to explore all of the code used to create this infographic below! 
 
 ```{r}
-#| code-fold: true
 #| eval: false
-#| echo: false
+#| echo: true
 
 ### load libraries ###
 library(tidyverse)
