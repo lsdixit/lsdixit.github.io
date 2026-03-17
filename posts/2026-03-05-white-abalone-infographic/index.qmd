@@ -20,8 +20,11 @@ Because of the success of captive breeding other abalone species, a recovery pla
 In this infographic, I decided to explore the data taken for the last decade from the WACBP to shed light on the successes this program has had, and where there may still important be work to do! My infographic will address the following questions:
 
 When thinking about the reproductive patterns in each stage of a white abalone's life cycle:
+
   - How do male and female adult white abalone differ in their reproductive output? Does it change based on their age?
+  
   - Have captive populations of juvenile white abalone increased over time? How many of those juveniles have been sent for outplanting in the wild?
+  
   - Do different genetic lines of white abalone spawn more? How do offspring of wild white abalone spawn? 
   
 This infographic is made of 3 plots to answer these questions, so I will break down each one before revealing the final graphic!
