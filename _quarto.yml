@@ -14,8 +14,10 @@ website:
         text: Home
       - about.qmd
       - posts.qmd
-      - href: resources.qmd
-        text: Resources
+      - href: leeladixit_resume.pdf
+        text: Resume
+      # - href: resources.qmd
+      #   text: Resources
       - icon: github
         href: https://github.com/lsdixit/lsdixit.github.io
   page-footer: 

@@ -7,55 +7,6 @@
     "text": "this is an h1 element\n\n\nthis is an h1 element with the title class\n\n\nthis paragraph is orange\n\n\nthis text is centered\n\n\nthis text is both centered and orange\n\n\nHere’s where I’m describing something fun that I enjoy doing.\nHere;s a full line\n\nHere’s one line\nHere’s another line\n\n\nThis is centered"
   },
   {
-    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html",
-    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html",
-    "title": "The Eaton and Palisades Fires",
-    "section": "",
-    "text": "Use of false-color imagery and Landsat data to assess impacts of fire.\n\nPhoto of homes burning right next to the ocean.\nPhoto credit: Cal-Fire.\nLink: https://commons.wikimedia.org/wiki/File:Palisades_Fire_(54253581167).jpg"
-  },
-  {
-    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#exploring-the-extent-and-impact-of-the-eaton-and-palisades-fires-in-los-angeles-county",
-    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#exploring-the-extent-and-impact-of-the-eaton-and-palisades-fires-in-los-angeles-county",
-    "title": "The Eaton and Palisades Fires",
-    "section": "",
-    "text": "Use of false-color imagery and Landsat data to assess impacts of fire.\n\nPhoto of homes burning right next to the ocean.\nPhoto credit: Cal-Fire.\nLink: https://commons.wikimedia.org/wiki/File:Palisades_Fire_(54253581167).jpg"
-  },
-  {
-    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#background",
-    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#background",
-    "title": "The Eaton and Palisades Fires",
-    "section": "Background",
-    "text": "Background\nThe Eaton and Palisades fires in Los Angeles County started in January 7, 2025 and subsequently burned over 20,000 acres, devastating local communities, damaging thousands of homes and many acres of ecological habitat, and leaving deep scars in both the communities they affected and the land itself. In this study, we will visualize the extents and impacts of the Eaton and Palisades fires using false color imagery through Landsat data and known perimeters of both fires, and focus in on an environmental justice metric to assess the community’s potential response to wildfire.\nTo learn more about false color images and landsats, see the following resources:\nWhy is that Forest Red and that Cloud Blue? How to Interpret a False-Color Satellite Image\nWhat are the band designations for the Landsat satellites?\nCommon Landsat Band Combinations\n\nAnalysis Highlights\nIn this study, we will highlight the following skills:\n\nExamining rioxarrays and NetCDF files to pull, transform, and manipulate spatial data.\nMap true and false color images from NetCDF files.\nMap census tracts that intersect the Eaton and Palisades fires to explore potential injustices.\n\n\n\nDatasets:\nLandsat data are from Microsoft Planetary Computer data catalogue. These data contain bands for red, green, blue, near-infrared and shortwave infrared, from the Landsat Collection 2 Level-2 collected by Landsat-8. Our data is cropped to areas surrounding the extent of the fires.\nPerimeter data are from Los Angeles County Dissolved Fire Perimeter Data. These data originate from data containing daily snapshots of perimeters, but are dissolved into one layer for these data.\nFire perimeter data: https://geohub.lacity.org/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about Landsat data: https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2\nEJI data are from the Environmental Justice Index (EJI), a national tool to measure environmental burden. The EJI ranks tracts for 36 different factors developed from data from many different sources.\n\n\nRepository:\nAll code and output for this blogpost are housed on GitHub.\nBegin by loading all necessary libraries and data.\n\n# Load libraries\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport os\nimport xarray as xr\nimport contextily as ctx\nfrom matplotlib_scalebar.scalebar import ScaleBar\n\n\n# Load data\n\n# Read in NetCDF file\nfp_landsat = os.path.join(\"data\", \"landsat8-2025-02-23-palisades-eaton.nc\")\nlandsat = xr.open_dataset(fp_landsat)\n\n# Read in perimeter data\nfp_eaton = os.path.join(\"data\", \"Eaton_Perimeter\", \"Eaton_Perimeter_20250121.shp\")\nfp_palisades = os.path.join(\"data\", \"Palisades_Perimeter\", \"Palisades_Perimeter_20250121.shp\")\neaton_perimeter = gpd.read_file(fp_eaton)\npalisades_perimeter = gpd.read_file(fp_palisades)\n\n# Import CA EJI gdb\nfp = os.path.join(\"data\", \"EJI_2024_California\", \"EJI_2024_California.gdb\")\neji_california = gpd.read_file(fp)"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Leela Dixit",
-    "section": "",
-    "text": "Leela is a motivated data scientist eager to achieve ethical, equitable, and just environmental solutions in a changing world."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Here’s what I do for work!"
-  },
-  {
-    "objectID": "about.html#what-i-do-for-work",
-    "href": "about.html#what-i-do-for-work",
-    "title": "About",
-    "section": "",
-    "text": "Here’s what I do for work!"
-  },
-  {
-    "objectID": "about.html#what-i-do-for-fun",
-    "href": "about.html#what-i-do-for-fun",
-    "title": "About",
-    "section": "What I do for fun",
-    "text": "What I do for fun\nHere’s what I do for fun!"
-  },
-  {
     "objectID": "posts/2025-12-05-eez-suitability/index.html",
     "href": "posts/2025-12-05-eez-suitability/index.html",
     "title": "Determining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA",
@@ -91,11 +42,60 @@
     "text": "Footnotes\n\n\nGentry, R. R., Alleway, H. K., Bishop, M. J., Gillies, C. L., Waters, T., & Jones, R. (2020). Exploring the potential for marine aquaculture to contribute to ecosystem services. Reviews in Aquaculture, 12(2), 499-512.↩︎\nGentry, R. R., Froehlich, H. E., Grimm, D., Kareiva, P., Parke, M., Rust, M., Gaines, S. D., & Halpern, B. S. Mapping the global potential for marine aquaculture. Nature Ecology & Evolution, 1, 1317-1324 (2017)↩︎\nGunnar Knapp & Michael C. Rubino (2016) The Political Economics of Marine Aquaculture in the United States, Reviews in Fisheries Science & Aquaculture, 24:3, 213-229, DOI: 10.1080/23308249.2015.1121202↩︎"
   },
   {
-    "objectID": "posts.html",
-    "href": "posts.html",
-    "title": "Blog Posts",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About Me",
     "section": "",
-    "text": "The Eaton and Palisades Fires\n\n\n\n\n\n\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nfire\n\n\n\n\n\n\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nExploring the Success and Setbacks of the White Abalone Captive Breeding Program\n\n\n\n\n\n\n\n\nMar 5, 2026\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nDetermining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA\n\n\n\n\n\n\n\n\nDec 11, 2025\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nMy first blog post\n\n\n\nMEDS\n\nR\n\ndata-viz\n\n\n\nwelcome to my blog!\n\n\n\n\n\nNov 12, 2025\n\n\nLeela Dixit\n\n\n\n\n\nNo matching items"
+    "text": "I grew up in the Bay Area of California, not particularly close to the ocean. However, I was always drawn to it, spending endless summer days at the aquarium and daydreaming about dolphins and sea stars. I always thought it was just a fun fascination, thinking I wanted to be a vet, cancer researcher, and even a musician. Once I started university, I realized maybe my fun fascination could actually be a career! I completed my undergraduate degree in Evolution, Ecology, and Biodiversity from the University of California, Davis (UCD) in 2018. While there, I explored as much biology as I could! I participated in microbiology research, learned the essentials of marine animal care working for the introductory biology course teaching lab, and conducting my own marine science research at the Bodega Marine Laboratory and through a Research Experience for Undergrads (REU) internship at the Oregon Institute of Marine Biology.\nAfter graduation, I continued to explore all there was to offer in the marine science field. I participated in outdoor education as an AmeriCorps fellow at the Ocean Discovery Institute, and conducted lab research in toxicology monitoring with the Granite Canyon Marine Pollution Studies Lab. My interest in data science began a bit later at the Department of Water Resources in West Sacramento where I conducted data analysis for long-term monitoring projects, wrote technical reports, and where I first learned how to code. I also worked with the White Abalone Captive Breeding Program at UCD where I was able to expand my interest and skillset with data science, working with data going back to the program’s inception and helping to implement clean workflows and reproducible codes. Both positions combined my newfound interest in data science and my already strong passion for environmental science, ultimately leading me to the Master of Environmental Data Science (MEDS) program.\nI hope to apply the skills I have honed with the MEDS program to meaningful work in environmental justice, restoration and conservation, and projects that can lead directly to positive change in environmental policy.\nYou can read more about my work experience in my resume!"
+  },
+  {
+    "objectID": "about.html#background",
+    "href": "about.html#background",
+    "title": "About Me",
+    "section": "",
+    "text": "I grew up in the Bay Area of California, not particularly close to the ocean. However, I was always drawn to it, spending endless summer days at the aquarium and daydreaming about dolphins and sea stars. I always thought it was just a fun fascination, thinking I wanted to be a vet, cancer researcher, and even a musician. Once I started university, I realized maybe my fun fascination could actually be a career! I completed my undergraduate degree in Evolution, Ecology, and Biodiversity from the University of California, Davis (UCD) in 2018. While there, I explored as much biology as I could! I participated in microbiology research, learned the essentials of marine animal care working for the introductory biology course teaching lab, and conducting my own marine science research at the Bodega Marine Laboratory and through a Research Experience for Undergrads (REU) internship at the Oregon Institute of Marine Biology.\nAfter graduation, I continued to explore all there was to offer in the marine science field. I participated in outdoor education as an AmeriCorps fellow at the Ocean Discovery Institute, and conducted lab research in toxicology monitoring with the Granite Canyon Marine Pollution Studies Lab. My interest in data science began a bit later at the Department of Water Resources in West Sacramento where I conducted data analysis for long-term monitoring projects, wrote technical reports, and where I first learned how to code. I also worked with the White Abalone Captive Breeding Program at UCD where I was able to expand my interest and skillset with data science, working with data going back to the program’s inception and helping to implement clean workflows and reproducible codes. Both positions combined my newfound interest in data science and my already strong passion for environmental science, ultimately leading me to the Master of Environmental Data Science (MEDS) program.\nI hope to apply the skills I have honed with the MEDS program to meaningful work in environmental justice, restoration and conservation, and projects that can lead directly to positive change in environmental policy.\nYou can read more about my work experience in my resume!"
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "About Me",
+    "section": "Education",
+    "text": "Education\nMaster of Environmental Data Science (MEDS), Bren School of Environmental Science & Management, University of California, Santa Barbara (2026)\nB.S. Evolution, Ecology, and Biodiversity, University of California, Davis (2018)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Leela Dixit",
+    "section": "",
+    "text": "Leela is a motivated data scientist eager to achieve ethical, equitable, and just environmental solutions in a changing world."
+  },
+  {
+    "objectID": "index.html#website-in-progress",
+    "href": "index.html#website-in-progress",
+    "title": "Leela Dixit",
+    "section": "Website in Progress!",
+    "text": "Website in Progress!"
+  },
+  {
+    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html",
+    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html",
+    "title": "The Eaton and Palisades Fires",
+    "section": "",
+    "text": "Use of false-color imagery and Landsat data to assess impacts of fire.\n\nPhoto of homes burning right next to the ocean.\nPhoto credit: Cal-Fire.\nLink: https://commons.wikimedia.org/wiki/File:Palisades_Fire_(54253581167).jpg"
+  },
+  {
+    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#exploring-the-extent-and-impact-of-the-eaton-and-palisades-fires-in-los-angeles-county",
+    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#exploring-the-extent-and-impact-of-the-eaton-and-palisades-fires-in-los-angeles-county",
+    "title": "The Eaton and Palisades Fires",
+    "section": "",
+    "text": "Use of false-color imagery and Landsat data to assess impacts of fire.\n\nPhoto of homes burning right next to the ocean.\nPhoto credit: Cal-Fire.\nLink: https://commons.wikimedia.org/wiki/File:Palisades_Fire_(54253581167).jpg"
+  },
+  {
+    "objectID": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#background",
+    "href": "posts/2025-12-1-fire-analysis/220_blog_post(1).html#background",
+    "title": "The Eaton and Palisades Fires",
+    "section": "Background",
+    "text": "Background\nThe Eaton and Palisades fires in Los Angeles County started in January 7, 2025 and subsequently burned over 20,000 acres, devastating local communities, damaging thousands of homes and many acres of ecological habitat, and leaving deep scars in both the communities they affected and the land itself. In this study, we will visualize the extents and impacts of the Eaton and Palisades fires using false color imagery through Landsat data and known perimeters of both fires, and focus in on an environmental justice metric to assess the community’s potential response to wildfire.\nTo learn more about false color images and landsats, see the following resources:\nWhy is that Forest Red and that Cloud Blue? How to Interpret a False-Color Satellite Image\nWhat are the band designations for the Landsat satellites?\nCommon Landsat Band Combinations\n\nAnalysis Highlights\nIn this study, we will highlight the following skills:\n\nExamining rioxarrays and NetCDF files to pull, transform, and manipulate spatial data.\nMap true and false color images from NetCDF files.\nMap census tracts that intersect the Eaton and Palisades fires to explore potential injustices.\n\n\n\nDatasets:\nLandsat data are from Microsoft Planetary Computer data catalogue. These data contain bands for red, green, blue, near-infrared and shortwave infrared, from the Landsat Collection 2 Level-2 collected by Landsat-8. Our data is cropped to areas surrounding the extent of the fires.\nPerimeter data are from Los Angeles County Dissolved Fire Perimeter Data. These data originate from data containing daily snapshots of perimeters, but are dissolved into one layer for these data.\nFire perimeter data: https://geohub.lacity.org/maps/ad51845ea5fb4eb483bc2a7c38b2370c/about Landsat data: https://planetarycomputer.microsoft.com/dataset/landsat-c2-l2\nEJI data are from the Environmental Justice Index (EJI), a national tool to measure environmental burden. The EJI ranks tracts for 36 different factors developed from data from many different sources.\n\n\nRepository:\nAll code and output for this blogpost are housed on GitHub.\nBegin by loading all necessary libraries and data.\n\n# Load libraries\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport numpy as np\nimport os\nimport xarray as xr\nimport contextily as ctx\nfrom matplotlib_scalebar.scalebar import ScaleBar\n\n\n# Load data\n\n# Read in NetCDF file\nfp_landsat = os.path.join(\"data\", \"landsat8-2025-02-23-palisades-eaton.nc\")\nlandsat = xr.open_dataset(fp_landsat)\n\n# Read in perimeter data\nfp_eaton = os.path.join(\"data\", \"Eaton_Perimeter\", \"Eaton_Perimeter_20250121.shp\")\nfp_palisades = os.path.join(\"data\", \"Palisades_Perimeter\", \"Palisades_Perimeter_20250121.shp\")\neaton_perimeter = gpd.read_file(fp_eaton)\npalisades_perimeter = gpd.read_file(fp_palisades)\n\n# Import CA EJI gdb\nfp = os.path.join(\"data\", \"EJI_2024_California\", \"EJI_2024_California.gdb\")\neji_california = gpd.read_file(fp)"
   },
   {
     "objectID": "posts/2026-03-05-white-abalone-infographic/index.html",
@@ -117,5 +117,12 @@
     "title": "Exploring the Success and Setbacks of the White Abalone Captive Breeding Program",
     "section": "General Design, contextualizing data, and centering the primary message",
     "text": "General Design, contextualizing data, and centering the primary message\nBecause my plots are relatively complex, it was a challenge to organize all three in a clean way to not overwhelm the reader. I decided to play on the ‘life cycle’ theme and build my infographic around a circular life cycle in the middle, indicating what each plot pertains to.\nGiven that the Sankey diagram is extremely visually complex, I had to make that plot the largest and build around it. I put it at the bottom, which then meant the histogram in the middle and heatmap at the top. Each plot’s main takeaway is in the title and quite large, so a reader can quickly skim the infographic and get the main messages.\nAlong with the life cycle theme, I did not direct the reader to follow any certain path. All life stages are interesting and important to the program’s success, and as such the reader may choose where to start. Background information, like the program’s history, white abalone’s native range and information on abalone importance to indigenous communities is at the top, as I think it provides necessary context and is the most important information a reader should look at first.\nTo center my primary message (Successes and setbacks of the WACBP), it is present in the subtitle and also in each plot. Each data visualization has the successes in the title, along with setbacks pointed out in annotations. I decided to not include setbacks in the title to maintain a positive outlook in the infographic (important in restoration work and also everyday life!)."
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Blog Posts",
+    "section": "",
+    "text": "The Eaton and Palisades Fires\n\n\n\n\n\n\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nfire\n\n\n\n\n\n\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nExploring the Success and Setbacks of the White Abalone Captive Breeding Program\n\n\n\n\n\n\n\n\nMar 5, 2026\n\n\nLeela Dixit\n\n\n\n\n\n\n\n\n\n\n\n\nDetermining optimal suitability in Exclusive Economic Zones (EEZ) on the West Coast of USA\n\n\n\n\n\n\n\n\nDec 11, 2025\n\n\nLeela Dixit\n\n\n\n\n\nNo matching items"
   }
 ]
